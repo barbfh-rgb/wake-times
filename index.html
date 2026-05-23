@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Sleep Times</title>
+  <title>Wake Times Ahh</title>
+  <link rel="manifest" href="wake-manifest.json">
+<link rel="apple-touch-icon" href="wake-icon.png">
   <meta name="theme-color" content="#0d0d0f">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Sleep Times">
+  <meta name="apple-mobile-web-app-title" content="Wake Times Ahh">
   <style>
     :root {
       --bg: #0d0d0f;
@@ -543,7 +545,7 @@
 <header>
   <div style="display:flex;align-items:center;gap:10px">
     <img class="header-logo" src="data:image/png;base64,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" alt="bfh">
-    <h1>Sleep Times</h1>
+    <h1>Wake Times Ahh</h1>
   </div>
   <span id="live-clock"></span>
 </header>
@@ -552,14 +554,13 @@
   <button class="active" data-view="tonight-view">Tonight</button>
   <button data-view="history-view">History</button>
   <button data-view="stats-view">Stats</button>
-  <button data-view="about-view">About</button>
 </nav>
 
 <div id="tonight-view" class="view active">
   <span id="night-label"></span>
   <button id="log-btn" onclick="logWake()">
     <span class="icon">⏱</span>
-    Log waking
+    Log wake
   </button>
   <div id="flash" class="hidden"></div>
   <div id="tonight-list-wrap">
@@ -579,28 +580,6 @@
 
 <div id="stats-view" class="view">
   <div id="stats-content"></div>
-</div>
-
-<div id="about-view" class="view" style="padding:24px 20px;gap:16px;overflow-y:auto">
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:12px">
-    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.09em;color:var(--muted);margin-bottom:10px">About Sleep Times</div>
-    <div style="font-size:0.9rem;line-height:1.7;color:var(--text)">A simple tool for tracking nighttime wakings and morning wellbeing ~ designed to help you notice patterns in your sleep over time.</div>
-  </div>
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:12px">
-    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.09em;color:var(--muted);margin-bottom:10px">How to use</div>
-    <div style="font-size:0.9rem;line-height:1.7;color:var(--text)">
-      Each time you wake in the night, tap <span style="color:var(--accent)">Log waking</span> to record the time.<br><br>
-      In the morning, tap how you feel. Over time the Stats tab will show your patterns.
-    </div>
-  </div>
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:12px">
-    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.09em;color:var(--muted);margin-bottom:10px">Privacy</div>
-    <div style="font-size:0.9rem;line-height:1.7;color:var(--text)">All your data is saved privately on your device only. Nothing is sent anywhere.</div>
-  </div>
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px">
-    <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.09em;color:var(--muted);margin-bottom:10px">Created by</div>
-    <div style="font-size:0.9rem;line-height:1.7;color:var(--text)">Barbara Ford-Hammond ~ hypnotherapist, muse, voiceover, crone.<br><span style="color:var(--muted)">barbaraford-hammond.com</span></div>
-  </div>
 </div>
 
 <script>
@@ -725,10 +704,10 @@
     document.getElementById('night-label').textContent = nightLabel(key);
 
     if (entries.length === 0) {
-      countEl.textContent = 'No wakings logged tonight';
+      countEl.textContent = 'No wakes logged tonight';
       listEl.innerHTML = '';
     } else {
-      countEl.textContent = entries.length === 1 ? '1 waking tonight' : `${entries.length} wakings tonight`;
+      countEl.textContent = entries.length === 1 ? '1 wake tonight' : `${entries.length} wakes tonight`;
       listEl.innerHTML = entries.map((w, i) => {
         const gap = i > 0 ? fmtGap(w.ts - entries[i - 1].ts) : '';
         const noteHtml = w.note
@@ -821,7 +800,7 @@
             <span class="night-card-date">${nightLabel(key)}</span>
             <span style="display:flex;align-items:center;gap:6px">
               ${morningHtml}
-              <span class="night-card-count">${count} waking${count !== 1 ? 's' : ''}</span>
+              <span class="night-card-count">${count} wake${count !== 1 ? 's' : ''}</span>
               <button class="clear-night-btn" onclick="clearNight('${key}')" title="Delete night">✕</button>
             </span>
           </div>
@@ -837,7 +816,7 @@
     const el = document.getElementById('stats-content');
 
     if (keys.length === 0) {
-      el.innerHTML = '<p class="stats-empty">No data yet — log some wakings first.</p>';
+      el.innerHTML = '<p class="stats-empty">No data yet — log some wakes first.</p>';
       return;
     }
 
@@ -934,6 +913,9 @@
 
   renderTonight();
 
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/wake-sw.js').catch(() => {});
+  }
 </script>
 </body>
 </html>
