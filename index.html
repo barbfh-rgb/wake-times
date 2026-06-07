@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Wake Times</title>
   <link rel="manifest" href="wake-manifest.json">
-<link rel="apple-touch-icon" href="wake-icon.png">
   <meta name="theme-color" content="#0d0d0f">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -538,6 +538,56 @@
       text-align: center;
       margin-top: 40px;
     }
+
+    /* ── Thoughts section ── */
+    #thoughts-section {
+      width: 100%;
+      max-width: 400px;
+      margin-top: 28px;
+    }
+
+    #thoughts-heading {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    #thoughts-textarea {
+      width: 100%;
+      min-height: 100px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 0.85rem;
+      font-family: inherit;
+      padding: 12px 14px;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.15s;
+      line-height: 1.5;
+    }
+
+    #thoughts-textarea:focus {
+      border-color: var(--accent);
+    }
+
+    #thoughts-textarea::placeholder {
+      color: var(--muted);
+      opacity: 0.6;
+    }
+
+    .history-thoughts {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-style: italic;
+      padding: 8px 14px 10px;
+      border-top: 1px solid var(--border);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
   </style>
 </head>
 <body>
@@ -570,6 +620,10 @@
   <div id="morning-section">
     <div id="morning-heading">How do you feel this morning?</div>
     <div class="feeling-grid" id="feeling-grid"></div>
+  </div>
+  <div id="thoughts-section">
+    <div id="thoughts-heading">Thoughts</div>
+    <textarea id="thoughts-textarea" placeholder="Anything on your mind about tonight…"></textarea>
   </div>
 </div>
 
@@ -633,9 +687,9 @@
       const out = {};
       for (const [key, val] of Object.entries(raw)) {
         if (Array.isArray(val)) {
-          out[key] = { wakes: val.map(ts => ({ ts, note: '' })), morning: null };
+          out[key] = { wakes: val.map(ts => ({ ts, note: '' })), morning: null, thoughts: '' };
         } else {
-          out[key] = val;
+          out[key] = { thoughts: '', ...val };
         }
       }
       return out;
@@ -645,7 +699,14 @@
   function saveData(d) { localStorage.setItem('wake-times', JSON.stringify(d)); }
 
   function getNight(key) {
-    return getData()[key] || { wakes: [], morning: null };
+    return getData()[key] || { wakes: [], morning: null, thoughts: '' };
+  }
+
+  function saveThoughts(key, text) {
+    const d = getData();
+    if (!d[key]) d[key] = { wakes: [], morning: null, thoughts: '' };
+    d[key].thoughts = text;
+    saveData(d);
   }
 
   function logWake() {
@@ -731,6 +792,11 @@
         <span class="feeling-emoji">${f.emoji}</span>
         <span>${f.label}</span>
       </button>`).join('');
+
+    // Thoughts textarea
+    const ta = document.getElementById('thoughts-textarea');
+    ta.value = night.thoughts || '';
+    ta.oninput = () => saveThoughts(key, ta.value);
   }
 
   function editNote(key, ts) {
@@ -806,6 +872,7 @@
           </div>
           <div class="night-card-entries">${entriesHtml}</div>
           ${statsHtml}
+          ${night.thoughts ? `<div class="history-thoughts">${night.thoughts.replace(/</g,'&lt;')}</div>` : ''}
         </div>`;
     }).join('');
   }
