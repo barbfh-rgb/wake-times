@@ -1,16 +1,16 @@
 {
-  "name": "Wake Times Ahh",
-  "short_name": "Wake Times Ahh",
-  "description": "Log wake times in the night",
+"name": "Wake Times",
+"short_name": "Wake Times",
+"description": "Log wake times in the night",
 "start_url": "/",
-  "display": "standalone",
-  "background_color": "#0d0d0f",
-  "theme_color": "#0d0d0f",
-  "icons": [
-    {
-      "src": "wake-icon.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+"display": "standalone",
+"background_color": "#0d0d0f",
+"theme_color": "#0d0d0f",
+"icons": [
+{
+"src": "wake-icon.png",
+"sizes": "512x512",
+"type": "image/png"
+}
+]
 }
