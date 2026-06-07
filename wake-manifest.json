@@ -2,7 +2,7 @@
   "name": "Wake Times Ahh",
   "short_name": "Wake Times Ahh",
   "description": "Log wake times in the night",
-  "start_url": "/sleep-times/",
+start_url": "/",
   "display": "standalone",
   "background_color": "#0d0d0f",
   "theme_color": "#0d0d0f",
