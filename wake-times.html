@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -92,6 +93,47 @@
     /* ── Views ── */
     .view { display: none; flex-direction: column; flex: 1; }
     .view.active { display: flex; }
+
+    /* ── About view ── */
+    .about-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      margin: 0 16px 14px;
+    }
+    .about-card:first-of-type { margin-top: 20px; }
+    .about-card-title {
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .about-card-text {
+      font-size: 0.9rem;
+      line-height: 1.75;
+      color: var(--text);
+    }
+    .about-card-text strong { color: var(--accent); font-weight: 500; }
+    .records-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .records-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      padding: 10px 14px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .records-btn:hover { border-color: var(--accent); color: var(--accent); }
 
     /* ── Tonight view ── */
     #tonight-view {
@@ -666,6 +708,7 @@
   <button class="active" data-view="tonight-view">Tonight</button>
   <button data-view="history-view">History</button>
   <button data-view="stats-view">Stats</button>
+  <button data-view="about-view">About</button>
 </nav>
 
 <div id="tonight-view" class="view active">
@@ -696,6 +739,53 @@
 
 <div id="stats-view" class="view">
   <div id="stats-content"></div>
+</div>
+
+<div id="about-view" class="view">
+  <div class="about-card">
+    <div class="about-card-title">Wake Times</div>
+    <div class="about-card-text">
+      This has been created to help you notice your sleep by logging the times you wake in the night. Nothing here is intended to replace medical help or treatment.<br><br>
+      Broken sleep is easier to live with once you can see its shape. When you keep a record you can spot patterns, and you have something clear to show a doctor or sleep clinic if you ever need to.
+    </div>
+  </div>
+  <div class="about-card">
+    <div class="about-card-title">How To Use</div>
+    <div class="about-card-text">
+      <strong>Tonight</strong> is where you tap "Log wake" each time you surface. Add a short note if you know what woke you. In the morning choose how you feel and add any thoughts.<br><br>
+      <strong>History</strong> holds every night you have logged, with the gaps between wakes.<br><br>
+      <strong>Stats</strong> shows how your nights compare over time.<br><br>
+      A night runs from 8pm through to noon the next day, so a 3am wake belongs to the night before.
+    </div>
+  </div>
+  <div class="about-card">
+    <div class="about-card-title">Your Records</div>
+    <div class="about-card-text">
+      Everything you log is held on this device only. Keep a backup so nothing is lost if you change phone, clear your browser or reinstall the app.<br><br>
+      <strong>Save a backup</strong> creates a small file of every night you have logged. On a phone you will be offered the share sheet, so you can send it to your files, your cloud storage or your own email. On a computer it lands in your downloads folder. Do this every few weeks.<br><br>
+      <strong>Restore from a backup</strong> lets you choose a backup file you saved earlier and your nights come back. Anything already logged on those dates is replaced, everything else is kept.<br><br>
+      <strong>Print or save as PDF</strong> opens your whole record ready to print, or choose "Save as PDF" in the print dialogue to keep a readable copy or hand one to a doctor.
+      <div class="records-btns">
+        <button class="records-btn" type="button" onclick="exportNights()">Save a backup</button>
+        <button class="records-btn" type="button" onclick="document.getElementById('import-file').click()">Restore from a backup</button>
+        <button class="records-btn" type="button" onclick="printNights()">Print or save as PDF</button>
+      </div>
+      <input type="file" id="import-file" accept="application/json,.json" style="display:none" onchange="importNights(this)">
+    </div>
+  </div>
+  <div class="about-card">
+    <div class="about-card-title">Privacy</div>
+    <div class="about-card-text">
+      All your data is saved privately on your device only. Nothing is sent anywhere, so do save yourself a backup now and then.
+    </div>
+  </div>
+  <div class="about-card">
+    <div class="about-card-title">Created by</div>
+    <div class="about-card-text">
+      Barbara Ford-Hammond ~ hypnotherapist, card reader, witch.<br>
+      <span style="opacity:0.6">barbaraford-hammond.com</span>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -1017,6 +1107,110 @@
     renderTonight();
     renderHistory();
     renderStats();
+  }
+
+  // ── Backup, restore, print ────────────────────
+  // Everything lives in this browser. These three let you keep a copy of it.
+  function collectAll() {
+    return {
+      app: 'wake-times',
+      version: 1,
+      exported: new Date().toISOString(),
+      nights: getData(),
+    };
+  }
+
+  function exportNights() {
+    const name = 'wake-times-' + todayNightKey() + '.json';
+    const text = JSON.stringify(collectAll(), null, 2);
+    // On a phone the share sheet is friendlier than a download.
+    try {
+      const file = new File([text], name, { type: 'application/json' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], title: 'Wake Times backup' }).catch(() => {});
+        return;
+      }
+    } catch (e) { /* fall through to download */ }
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+
+  function importNights(input) {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      let data;
+      try { data = JSON.parse(reader.result); }
+      catch (e) { alert('That file could not be read.'); input.value = ''; return; }
+      if (!data || data.app !== 'wake-times' || !data.nights) {
+        alert('That does not look like a Wake Times backup.');
+        input.value = '';
+        return;
+      }
+      const nights = Object.keys(data.nights).length;
+      if (!confirm('Restore ' + nights + (nights === 1 ? ' night' : ' nights') +
+                   '?\n\nAnything already logged on those dates will be replaced. Everything else is kept.')) {
+        input.value = '';
+        return;
+      }
+      // Merge rather than wipe, so restoring never loses what is already here.
+      const all = getData();
+      Object.keys(data.nights).forEach(k => { all[k] = data.nights[k]; });
+      saveData(all);
+      input.value = '';
+      renderTonight();
+      alert('Your nights have been restored.');
+    };
+    reader.readAsText(file);
+  }
+
+  function printNights() {
+    const d = getData();
+    const keys = Object.keys(d).sort((a, b) => b.localeCompare(a));
+    const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    let body = '';
+    keys.forEach(key => {
+      const night = d[key];
+      const entries = (night.wakes || []).slice().sort((a, b) => a.ts - b.ts);
+      if (!entries.length && !night.thoughts && !night.morning) return;
+      const f = FEELINGS.find(x => x.id === night.morning);
+      body += '<div class="item"><div class="h"><span>' + esc(nightLabel(key)) + '</span>' +
+              '<span>' + entries.length + (entries.length === 1 ? ' wake' : ' wakes') +
+              (f ? ' &middot; ' + esc(f.label) : '') + '</span></div>';
+      if (entries.length) {
+        body += '<table>' + entries.map((w, i) =>
+          '<tr><td>' + esc(fmtTime(w.ts)) + '</td>' +
+          '<td>' + (i > 0 ? esc(fmtGap(w.ts - entries[i - 1].ts)) : '') + '</td>' +
+          '<td>' + esc(w.note || '') + '</td></tr>').join('') + '</table>';
+      }
+      if (night.thoughts) body += '<div class="a">' + esc(night.thoughts).replace(/\n/g, '<br>') + '</div>';
+      body += '</div>';
+    });
+    if (!body) { alert('There is nothing logged yet to print.'); return; }
+    const w = window.open('', '_blank');
+    if (!w) { alert('Your browser blocked the print window. Allow pop-ups for this app and try again.'); return; }
+    w.document.write(
+      '<!doctype html><html><head><meta charset="utf-8"><title>My Wake Times</title>' +
+      '<style>body{font-family:Georgia,serif;color:#1a1a1f;max-width:700px;margin:40px auto;padding:0 24px;line-height:1.6}' +
+      'h1{font-size:22px;letter-spacing:2px;text-transform:uppercase}' +
+      '.item{margin:20px 0;page-break-inside:avoid}' +
+      '.h{display:flex;justify-content:space-between;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#55556a;border-bottom:1px solid #ccc;padding-bottom:5px}' +
+      'table{width:100%;border-collapse:collapse;margin-top:8px;font-size:14px}' +
+      'td{padding:3px 8px 3px 0;vertical-align:top}td:first-child{width:90px}td:nth-child(2){width:70px;color:#55556a}' +
+      '.a{margin-top:8px;font-style:italic}' +
+      '.foot{margin-top:40px;font-size:12px;opacity:0.6}</style></head><body>' +
+      '<h1>My Wake Times</h1>' + body +
+      '<div class="foot">Wake Times ~ Barbara Ford-Hammond ~ barbaraford-hammond.com</div>' +
+      '</body></html>'
+    );
+    w.document.close();
+    setTimeout(() => { w.focus(); w.print(); }, 300);
   }
 
   // Tab switching
